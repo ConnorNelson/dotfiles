@@ -1,0 +1,272 @@
+#+TITLE: Emacs configuration file
+#+AUTHOR: Connor Nelson
+#+BABEL: :cache yes
+#+PROPERTY: header-args :tangle yes
+
+* Configuration
+** Meta
+
+   The following configuration found initially in =init.el= enables the
+   automatic bootstrapping process.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     ;; This file replaces itself with the actual configuration at first run.
+     (require 'org)
+     (find-file (concat user-emacs-directory "init.org"))
+     (org-babel-tangle)
+     (load-file (concat user-emacs-directory "init.el"))
+     (byte-compile-file (concat user-emacs-directory "init.el"))
+   #+END_SRC
+
+   Lexical binding is more rigid and less chaotic than dynamic binding for this
+   config file.
+
+   #+BEGIN_SRC emacs-lisp
+     ;;; -*- lexical-binding: t -*-
+   #+END_SRC
+
+   Automatically recompile =init.el= when =init.org= is changed, on save.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun tangle-init ()
+       (when (equal (buffer-file-name)
+                    (expand-file-name (concat user-emacs-directory "init.org")))
+         ;; Avoid running hooks when tangling.
+         (let ((prog-mode-hook nil))
+           (org-babel-tangle)
+           (byte-compile-file (concat user-emacs-directory "init.el")))))
+
+     (add-hook 'after-save-hook 'tangle-init)
+   #+END_SRC
+
+** Package Management
+
+   Some basic packages are required.
+
+   #+BEGIN_SRC emacs-lisp
+     ; (require 'cl)
+     (require 'package)
+     (package-initialize)
+   #+END_SRC
+
+   Melpa has a large repository of the most popular packages.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+     (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+   #+END_SRC
+
+   The package =use-package= is great for managing packages. It's also nice to
+   ensure used packages are installed.
+
+   #+BEGIN_SRC emacs-lisp
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+     (require 'use-package)
+
+     (setq use-package-always-ensure t)
+   #+END_SRC
+
+** Custom Packages
+*** Helm
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm
+        :bind (("M-x" . helm-M-x)
+               ("C-x C-f" . helm-find-files)
+               ("C-x b" . helm-buffers-list)
+               ("C-x C-b" . helm-filtered-bookmarks))
+        :config
+        (helm-autoresize-mode t))
+    #+END_SRC
+
+*** Projectile
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package projectile
+        :init
+        (setq projectile-enable-caching t)
+        :config
+        (projectile-mode))
+    #+END_SRC
+
+*** Helm Projectile
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-projectile
+        :config
+        (helm-projectile-on))
+    #+END_SRC
+
+*** Magit
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package magit
+        :bind ("C-x g" . magit-status))
+    #+END_SRC
+
+*** Multiple Cursors
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package multiple-cursors
+        :bind (("C-S-C C-S-c" . mc/edit-lines)
+               ("C->" . mc/mark-next-like-this)
+               ("C-<" . mc/mark-previous-like-this)
+               ("C-c C-<" . mc/mark-all-like-this)))
+    #+END_SRC
+
+*** Undo Tree
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package undo-tree
+        :config
+        (global-undo-tree-mode))
+    #+END_SRC
+
+*** Ace Window
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ace-window
+        :bind ("M-o" . ace-window))
+    #+END_SRC
+
+*** Elpy
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package elpy
+        :config
+        (elpy-enable)
+        (setq python-shell-interpreter "ipython"
+              python-shell-interpreter-args "-i --simple-prompt")
+        (pyvenv-workon "+"))
+    #+END_SRC
+
+** Sane Defaults
+
+   Use default customization values that are more sane.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-startup-message t        ; No splash screen
+           initial-scratch-message nil      ; Clean scratch buffer
+           echo-keystrokes 0.1              ; Show keystrokes asap
+           auto-revert-interval 1           ; Refresh buffers fast
+           custom-file (make-temp-file "")  ; Discard customization's
+           dired-dwim-target t              ; Make dired more intelligent
+           default-input-method "TeX"       ; Use TeX when toggling input method
+           ring-bell-function 'ignore       ; Quiet
+           sentence-end-double-space nil)   ; No double space
+   #+END_SRC
+
+   Some customizations must be done with =setq-default= because they are
+   buffer-local.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil         ; Use spaces instead of tabs
+                   split-width-threshold nil    ; Split horizontally by default
+                   split-height-threshold 160)  ; Split horizontally by default
+
+   #+END_SRC
+
+   Disable some of the default modes that aren't very useful.
+
+   #+BEGIN_SRC emacs-lisp
+     (dolist (mode
+              '(tool-bar-mode                ; No toolbars
+                scroll-bar-mode              ; No scroll bars
+                blink-cursor-mode))          ; No blinking cursor
+       (funcall mode 0))
+   #+END_SRC
+
+   Enable modes that are disabled by default.
+
+   #+BEGIN_SRC emacs-lisp
+     (dolist (mode
+              '(column-number-mode           ; Show column number in mode line
+                delete-selection-mode        ; Replace selected text
+                projectile-global-mode       ; Manage and navigate projects
+                show-paren-mode              ; Highlight matching parentheses
+                ; which-key-mode               ; Available keybindings in popup
+                winner-mode))                ; Allow undo/redo on window operations
+       (funcall mode 1))
+   #+END_SRC
+
+   To avoid file system clutter, put all auto saved files in a single
+   directory.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar emacs-autosave-directory
+       (concat user-emacs-directory "autosaves/")
+       "This variable dictates where to put auto saves. It is set to a
+       directory called autosaves located wherever your .emacs.d/ is
+       located.")
+
+     ;; Sets all files to be backed up and auto saved in a single directory.
+     (setq backup-directory-alist
+           `((".*" . ,emacs-autosave-directory))
+           auto-save-file-name-transforms
+           `((".*" ,emacs-autosave-directory t)))
+   #+END_SRC
+
+   Set =utf-8= as preferred coding system.
+
+   #+BEGIN_SRC emacs-lisp
+     (set-language-environment "UTF-8")
+   #+END_SRC
+
+   Yes/no is so verbose. Answer questions with y/n.
+
+   #+BEGIN_SRC emacs-lisp
+     (fset 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC
+
+   Some commands are disabled by default because they might confuse new users.
+   Enable some of these commands.
+
+   #+BEGIN_SRC emacs-lisp
+     (put 'narrow-to-region 'disabled nil)
+   #+END_SRC
+
+   Don't allow trailing whitespace to end up in a saved file.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+   #+END_SRC
+
+   Automaticly revert =doc-view=-buffers when the file changes on disk.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+   #+END_SRC
+
+** Visual
+
+   Set the default font.
+
+   #+BEGIN_SRC emacs-lisp
+     (set-face-attribute 'default nil
+                         :family "Source Code Pro"
+                         :height 160
+                         :weight 'normal
+                         :width 'normal)
+   #+END_SRC
+
+   Use a doom theme.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package doom-themes
+       :config
+       (load-theme 'doom-one t)
+       (doom-themes-visual-bell-config)
+       (doom-themes-org-config))
+   #+END_SRC
+
+   Control the mode line.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package powerline
+       :config
+       (powerline-default-theme))
+
+     (load-file (concat user-emacs-directory "doom-modeline.el"))
+   #+END_SRC
