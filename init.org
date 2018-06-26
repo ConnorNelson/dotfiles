@@ -139,7 +139,16 @@
         (elpy-enable)
         (setq python-shell-interpreter "ipython"
               python-shell-interpreter-args "-i --simple-prompt")
-        (pyvenv-workon "+"))
+        (pyvenv-workon "+")
+        (setq elpy-modules
+              '(elpy-module-sane-defaults
+                elpy-module-company
+                elpy-module-eldoc
+                ;; elpy-module-flymake
+                ;; elpy-module-highlight-indentation
+                elpy-module-pyvenv
+                elpy-module-yasnippet
+                elpy-module-django)))
     #+END_SRC
 
 ** Sane Defaults
@@ -163,8 +172,8 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil         ; Use spaces instead of tabs
-                   split-width-threshold nil    ; Split horizontally by default
-                   split-height-threshold 160)  ; Split horizontally by default
+                   split-width-threshold 160    ; Split vertically by default
+                   split-height-threshold nil)  ; Split vertically by default
 
    #+END_SRC
 
@@ -173,6 +182,7 @@
    #+BEGIN_SRC emacs-lisp
      (dolist (mode
               '(tool-bar-mode                ; No toolbars
+                menu-bar-mode                ; No menu bar
                 scroll-bar-mode              ; No scroll bars
                 blink-cursor-mode))          ; No blinking cursor
        (funcall mode 0))
