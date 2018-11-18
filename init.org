@@ -44,9 +44,7 @@
    Some basic packages are required.
 
    #+BEGIN_SRC emacs-lisp
-     ; (require 'cl)
      (require 'package)
-     (package-initialize)
    #+END_SRC
 
    Melpa has a large repository of the most popular packages.
@@ -75,10 +73,8 @@
       (use-package helm
         :bind (("M-x" . helm-M-x)
                ("C-x C-f" . helm-find-files)
-               ("C-x b" . helm-buffers-list)
-               ("C-x C-b" . helm-filtered-bookmarks))
-        :config
-        (helm-autoresize-mode t))
+               ("C-x b" . helm-mini)
+               ("C-x C-b" . helm-filtered-bookmarks)))
     #+END_SRC
 
 *** Projectile
@@ -97,6 +93,30 @@
       (use-package helm-projectile
         :config
         (helm-projectile-on))
+    #+END_SRC
+
+*** Hydra
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package hydra
+        :defer 0.5
+        :bind ("C-c c" . hydra-misc/body))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (defhydra hydra-misc (:color blue)
+        "
+        ^
+        ^Buffer^             ^Do^
+        ^──────^─────────────^──^──────────
+        _q_ quit             _f_ toggle fullscreen
+        ^^                   _e_ eshell
+        ^^                   ^^
+        "
+        ("q" nil)
+        ("f" toggle-frame-fullscreen)
+        ("e" eshell)
+        )
     #+END_SRC
 
 *** Magit
@@ -131,6 +151,16 @@
         :bind ("M-o" . ace-window))
     #+END_SRC
 
+*** Exec Path From Shell
+
+    Make sure that environment variables are inherited from the shell.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package exec-path-from-shell
+        :config
+        (exec-path-from-shell-initialize))
+    #+END_SRC
+
 *** Elpy
 
     #+BEGIN_SRC emacs-lisp
@@ -138,7 +168,8 @@
         :config
         (elpy-enable)
         (setq python-shell-interpreter "ipython"
-              python-shell-interpreter-args "-i --simple-prompt")
+              python-shell-interpreter-args "-i --simple-prompt"
+              elpy-rpc-backend "jedi")
         (pyvenv-workon "+")
         (setq elpy-modules
               '(elpy-module-sane-defaults
@@ -151,6 +182,12 @@
                 elpy-module-django)))
     #+END_SRC
 
+*** Pdf Tools
+
+    # #+BEGIN_SRC emacs-lisp
+    #   (use-package pdf-tools)
+    # #+END_SRC
+
 ** Sane Defaults
 
    Use default customization values that are more sane.
@@ -158,13 +195,17 @@
    #+BEGIN_SRC emacs-lisp
      (setq inhibit-startup-message t        ; No splash screen
            initial-scratch-message nil      ; Clean scratch buffer
+           frame-resize-pixelwise t         ; Reframe by pixel
            echo-keystrokes 0.1              ; Show keystrokes asap
            auto-revert-interval 1           ; Refresh buffers fast
+           default-directory "~/"           ; Home is the default directory
            custom-file (make-temp-file "")  ; Discard customization's
            dired-dwim-target t              ; Make dired more intelligent
            default-input-method "TeX"       ; Use TeX when toggling input method
            ring-bell-function 'ignore       ; Quiet
-           sentence-end-double-space nil)   ; No double space
+           sentence-end-double-space nil    ; No double space
+           org-src-fontify-natively t       ; Use native fonts in src blocks
+           org-confirm-babel-evaluate nil)  ; Don't confirm when eval'ing code (dangerous)
    #+END_SRC
 
    Some customizations must be done with =setq-default= because they are
@@ -243,10 +284,30 @@
      (add-hook 'before-save-hook 'delete-trailing-whitespace)
    #+END_SRC
 
+   Allow python to be interpreted by babel.
+
+   #+BEGIN_SRC emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((python . t)))
+   #+END_SRC
+
    Automaticly revert =doc-view=-buffers when the file changes on disk.
 
    #+BEGIN_SRC emacs-lisp
      (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+   #+END_SRC
+
+** Misc Customizations
+
+   Customize eshell to augment it with extra functionality
+
+   #+BEGIN_SRC emacs-lisp
+     (defun eshell/clear ()
+       "Clear the eshell buffer."
+       (let ((inhibit-read-only t))
+         (erase-buffer)
+         (eshell-send-input)))
    #+END_SRC
 
 ** Visual
@@ -256,7 +317,7 @@
    #+BEGIN_SRC emacs-lisp
      (set-face-attribute 'default nil
                          :family "Source Code Pro"
-                         :height 160
+                         :height 140
                          :weight 'normal
                          :width 'normal)
    #+END_SRC
@@ -265,6 +326,8 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package doom-themes
+       :preface
+       (defvar region-fg nil)
        :config
        (load-theme 'doom-one t)
        (doom-themes-visual-bell-config)
@@ -274,9 +337,51 @@
    Control the mode line.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package powerline
-       :config
-       (powerline-default-theme))
+     (use-package all-the-icons)
+     (autoload 'vc-git-branches "vc-git")
 
-     (load-file (concat user-emacs-directory "doom-modeline.el"))
+     (defun render-mode-line (left right)
+       (let ((available-width (- (window-width) (length left))))
+         (format (format "%%s %%%ds" available-width) left right)))
+
+     (defun octicon (symbol &optional color)
+       (let ((color (or color 'white)))
+         (propertize (all-the-icons-octicon symbol)
+                     'display `((raise 0))
+                     'face `(:family ,(all-the-icons-octicon-family)
+                             :foreground ,(doom-color color)
+                             :height 1.0))))
+
+     (setq-default
+      mode-line-format
+      '((:eval
+         (render-mode-line
+          ;; left
+          (format-mode-line
+           (concat
+            " "
+            (cond
+             ((not (buffer-file-name)) (octicon "star"))
+             (buffer-read-only (octicon "lock"))
+             ((buffer-modified-p) (octicon "diff"))
+             (t (octicon "checklist")))
+            (propertize " %m "
+                        'face `(:weight bold))
+            (octicon "dash" 'grey)
+            (propertize " %b "
+                        'face `(:weight bold))))
+          ;; right
+          (format-mode-line
+           (string-join
+            `(,(let ((branch (car (vc-git-branches))))
+                 (when branch
+                   (string-join
+                    `(,(octicon "git-branch")
+                      ,branch
+                      ,(octicon "dash" 'grey))
+                    " ")))
+              ,(propertize "%l : %c "
+                           'face `(:weight bold)))
+            " "))
+          ))))
    #+END_SRC
