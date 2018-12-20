@@ -67,16 +67,6 @@
    #+END_SRC
 
 ** Custom Packages
-*** Helm
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm
-        :bind (("M-x" . helm-M-x)
-               ("C-x C-f" . helm-find-files)
-               ("C-x b" . helm-mini)
-               ("C-x C-b" . helm-filtered-bookmarks)))
-    #+END_SRC
-
 *** Projectile
 
     #+BEGIN_SRC emacs-lisp
@@ -87,6 +77,16 @@
         (projectile-mode))
     #+END_SRC
 
+*** Helm
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm
+        :bind (("M-x" . helm-M-x)
+               ("C-x C-f" . helm-find-files)
+               ("C-x b" . helm-mini)
+               ("C-x C-b" . helm-filtered-bookmarks)))
+    #+END_SRC
+
 *** Helm Projectile
 
     #+BEGIN_SRC emacs-lisp
@@ -95,28 +95,29 @@
         (helm-projectile-on))
     #+END_SRC
 
+*** Helm Swoop
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-swoop
+        :bind ("M-i" . helm-swoop))
+    #+END_SRC
+
 *** Hydra
 
     #+BEGIN_SRC emacs-lisp
       (use-package hydra
-        :defer 0.5
+        :config
+        (defhydra hydra-misc (:color blue)
+          ("q" nil "quit")
+          ("i" text-scale-increase "zoom in" :color red)
+          ("o" text-scale-decrease "zoom out" :color red)
+          ("p" (lambda ()
+                 (interactive)
+                 (text-scale-increase 0))
+           "zoom reset")
+          ("f" toggle-frame-fullscreen "fullscreen")
+          ("e" eshell "eshell"))
         :bind ("C-c c" . hydra-misc/body))
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      (defhydra hydra-misc (:color blue)
-        "
-        ^
-        ^Buffer^             ^Do^
-        ^──────^─────────────^──^──────────
-        _q_ quit             _f_ toggle fullscreen
-        ^^                   _e_ eshell
-        ^^                   ^^
-        "
-        ("q" nil)
-        ("f" toggle-frame-fullscreen)
-        ("e" eshell)
-        )
     #+END_SRC
 
 *** Magit
@@ -142,6 +143,16 @@
       (use-package undo-tree
         :config
         (global-undo-tree-mode))
+    #+END_SRC
+
+*** Avy
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package avy
+        :config
+        (setq avy-background t)
+        :bind (("C-;" . avy-goto-char-timer)
+               ("C-:" . avy-pop-mark)))
     #+END_SRC
 
 *** Ace Window
@@ -181,12 +192,6 @@
                 elpy-module-yasnippet
                 elpy-module-django)))
     #+END_SRC
-
-*** Pdf Tools
-
-    # #+BEGIN_SRC emacs-lisp
-    #   (use-package pdf-tools)
-    # #+END_SRC
 
 ** Sane Defaults
 
@@ -337,51 +342,58 @@
    Control the mode line.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package all-the-icons)
-     (autoload 'vc-git-branches "vc-git")
+     (use-package doom-modeline
+        :config
+        (doom-modeline-init)
+        (setq inhibit-compacting-font-caches t))
+   #+END_SRC
 
-     (defun render-mode-line (left right)
-       (let ((available-width (- (window-width) (length left))))
-         (format (format "%%s %%%ds" available-width) left right)))
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package all-the-icons)
+     ;; (autoload 'vc-git-branches "vc-git")
 
-     (defun octicon (symbol &optional color)
-       (let ((color (or color 'white)))
-         (propertize (all-the-icons-octicon symbol)
-                     'display `((raise 0))
-                     'face `(:family ,(all-the-icons-octicon-family)
-                             :foreground ,(doom-color color)
-                             :height 1.0))))
+     ;; (defun render-mode-line (left right)
+     ;;   (let ((available-width (- (window-width) (length left))))
+     ;;     (format (format "%%s %%%ds" available-width) left right)))
 
-     (setq-default
-      mode-line-format
-      '((:eval
-         (render-mode-line
-          ;; left
-          (format-mode-line
-           (concat
-            " "
-            (cond
-             ((not (buffer-file-name)) (octicon "star"))
-             (buffer-read-only (octicon "lock"))
-             ((buffer-modified-p) (octicon "diff"))
-             (t (octicon "checklist")))
-            (propertize " %m "
-                        'face `(:weight bold))
-            (octicon "dash" 'grey)
-            (propertize " %b "
-                        'face `(:weight bold))))
-          ;; right
-          (format-mode-line
-           (string-join
-            `(,(let ((branch (car (vc-git-branches))))
-                 (when branch
-                   (string-join
-                    `(,(octicon "git-branch")
-                      ,branch
-                      ,(octicon "dash" 'grey))
-                    " ")))
-              ,(propertize "%l : %c "
-                           'face `(:weight bold)))
-            " "))
-          ))))
+     ;; (defun octicon (symbol &optional color)
+     ;;   (let ((color (or color 'white)))
+     ;;     (propertize (all-the-icons-octicon symbol)
+     ;;                 'display `((raise 0))
+     ;;                 'face `(:family ,(all-the-icons-octicon-family)
+     ;;                         :foreground ,(doom-color color)
+     ;;                         :height 1.0))))
+
+     ;; (setq-default
+     ;;  mode-line-format
+     ;;  '((:eval
+     ;;     (render-mode-line
+     ;;      ;; left
+     ;;      (format-mode-line
+     ;;       (concat
+     ;;        " "
+     ;;        (cond
+     ;;         ((not (buffer-file-name)) (octicon "star"))
+     ;;         (buffer-read-only (octicon "lock"))
+     ;;         ((buffer-modified-p) (octicon "diff"))
+     ;;         (t (octicon "checklist")))
+     ;;        (propertize " %m "
+     ;;                    'face `(:weight bold))
+     ;;        (octicon "dash" 'grey)
+     ;;        (propertize " %b "
+     ;;                    'face `(:weight bold))))
+     ;;      ;; right
+     ;;      (format-mode-line
+     ;;       (string-join
+     ;;        `(,(let ((branch (car (vc-git-branches))))
+     ;;             (when branch
+     ;;               (string-join
+     ;;                `(,(octicon "git-branch")
+     ;;                  ,branch
+     ;;                  ,(octicon "dash" 'grey))
+     ;;                " ")))
+     ;;          ,(propertize "%l : %c "
+     ;;                       'face `(:weight bold)))
+     ;;        " "))
+     ;;      ))))
    #+END_SRC
