@@ -59,11 +59,22 @@
 
    #+BEGIN_SRC emacs-lisp
      (unless (package-installed-p 'use-package)
+       (package-initialize)
        (package-refresh-contents)
        (package-install 'use-package))
      (require 'use-package)
 
      (setq use-package-always-ensure t)
+   #+END_SRC
+
+   Automatically update packages
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-package-update
+     :config
+     (setq auto-package-update-delete-old-versions t
+           auto-package-update-interval 1)
+     (auto-package-update-maybe))
    #+END_SRC
 
 ** Custom Packages
@@ -73,8 +84,9 @@
       (use-package projectile
         :init
         (setq projectile-enable-caching t)
-        :config
-        (projectile-mode))
+        (projectile-mode)
+        :bind-keymap
+        ("C-c p" . projectile-command-map))
     #+END_SRC
 
 *** Helm
@@ -107,17 +119,27 @@
     #+BEGIN_SRC emacs-lisp
       (use-package hydra
         :config
-        (defhydra hydra-misc (:color blue)
-          ("q" nil "quit")
-          ("i" text-scale-increase "zoom in" :color red)
-          ("o" text-scale-decrease "zoom out" :color red)
+        (defhydra hydra-misc (:color red)
+          ("q" nil "quit" :color blue)
+          ("i" text-scale-increase "zoom in")
+          ("o" text-scale-decrease "zoom out")
           ("p" (lambda ()
                  (interactive)
                  (text-scale-increase 0))
            "zoom reset")
           ("f" toggle-frame-fullscreen "fullscreen")
-          ("e" eshell "eshell"))
+          ("d" (load-theme 'doom-one) "dark theme")
+          ("l" (load-theme 'doom-opera-light) "light theme")
+          ("e" eshell "eshell" :color blue))
         :bind ("C-c c" . hydra-misc/body))
+    #+END_SRC
+
+*** Which Key
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package which-key
+        :config
+        (which-key-mode))
     #+END_SRC
 
 *** Magit
@@ -142,7 +164,12 @@
     #+BEGIN_SRC emacs-lisp
       (use-package undo-tree
         :config
-        (global-undo-tree-mode))
+        (global-undo-tree-mode)
+        ;; (advice-add #'undo-tree-undo-1 :after #'doom-modeline-update-buffer-file-state-icon)
+        ;; (advice-add #'undo-tree-redo-1 :after #'doom-modeline-update-buffer-file-state-icon)
+        ;; (advice-add #'undo-tree-undo-1 :after #'doom-modeline-update-buffer-file-name)
+        ;; (advice-add #'undo-tree-redo-1 :after #'doom-modeline-update-buffer-file-name)
+        )
     #+END_SRC
 
 *** Avy
@@ -339,7 +366,7 @@
        (doom-themes-org-config))
    #+END_SRC
 
-   Control the mode line.
+   Use a doom mode line.
 
    #+BEGIN_SRC emacs-lisp
      (use-package doom-modeline
