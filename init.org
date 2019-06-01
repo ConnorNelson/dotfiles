@@ -45,6 +45,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (require 'package)
+     (package-initialize)
    #+END_SRC
 
    Melpa has a large repository of the most popular packages.
@@ -194,9 +195,10 @@
     Make sure that environment variables are inherited from the shell.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package exec-path-from-shell
-        :config
-        (exec-path-from-shell-initialize))
+      (when (memq window-system '(mac ns))
+        (use-package exec-path-from-shell
+          :config
+          (exec-path-from-shell-initialize)))
     #+END_SRC
 
 *** Elpy
