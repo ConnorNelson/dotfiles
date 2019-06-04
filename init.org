@@ -83,9 +83,13 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package projectile
-        :init
-        (setq projectile-enable-caching t)
+        :config
         (projectile-mode)
+        (setq projectile-enable-caching t
+              projectile-switch-project-action
+              (lambda ()
+                (let ((magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+                  (magit-status-setup-buffer))))
         :bind-keymap
         ("C-c p" . projectile-command-map))
     #+END_SRC
@@ -165,12 +169,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package undo-tree
         :config
-        (global-undo-tree-mode)
-        ;; (advice-add #'undo-tree-undo-1 :after #'doom-modeline-update-buffer-file-state-icon)
-        ;; (advice-add #'undo-tree-redo-1 :after #'doom-modeline-update-buffer-file-state-icon)
-        ;; (advice-add #'undo-tree-undo-1 :after #'doom-modeline-update-buffer-file-name)
-        ;; (advice-add #'undo-tree-redo-1 :after #'doom-modeline-update-buffer-file-name)
-        )
+        (global-undo-tree-mode))
     #+END_SRC
 
 *** Avy
@@ -188,17 +187,6 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ace-window
         :bind ("M-o" . ace-window))
-    #+END_SRC
-
-*** Exec Path From Shell
-
-    Make sure that environment variables are inherited from the shell.
-
-    #+BEGIN_SRC emacs-lisp
-      (when (memq window-system '(mac ns))
-        (use-package exec-path-from-shell
-          :config
-          (exec-path-from-shell-initialize)))
     #+END_SRC
 
 *** Elpy
@@ -220,6 +208,33 @@
                 elpy-module-pyvenv
                 elpy-module-yasnippet
                 elpy-module-django)))
+    #+END_SRC
+
+*** Docker
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package docker
+        :bind ("C-c d" . docker))
+    #+END_SRC
+
+*** Exec Path From Shell
+
+    Make sure that environment variables are inherited from the shell.
+
+    #+BEGIN_SRC emacs-lisp
+      (when (memq window-system '(mac ns))
+        (use-package exec-path-from-shell
+          :config
+          (exec-path-from-shell-initialize)))
+    #+END_SRC
+
+*** PDF Tools
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package pdf-tools
+          :config
+          (pdf-tools-install)
+          (setq-default pdf-view-display-size 'fit-page))
     #+END_SRC
 
 ** Sane Defaults
@@ -271,7 +286,6 @@
                 delete-selection-mode        ; Replace selected text
                 projectile-global-mode       ; Manage and navigate projects
                 show-paren-mode              ; Highlight matching parentheses
-                ; which-key-mode               ; Available keybindings in popup
                 winner-mode))                ; Allow undo/redo on window operations
        (funcall mode 1))
    #+END_SRC
@@ -364,7 +378,7 @@
        (defvar region-fg nil)
        :config
        (load-theme 'doom-one t)
-       (doom-themes-visual-bell-config)
+       ; (doom-themes-visual-bell-config)
        (doom-themes-org-config))
    #+END_SRC
 
@@ -373,56 +387,6 @@
    #+BEGIN_SRC emacs-lisp
      (use-package doom-modeline
         :config
-        (doom-modeline-init)
+        (doom-modeline-mode)
         (setq inhibit-compacting-font-caches t))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     ;; (use-package all-the-icons)
-     ;; (autoload 'vc-git-branches "vc-git")
-
-     ;; (defun render-mode-line (left right)
-     ;;   (let ((available-width (- (window-width) (length left))))
-     ;;     (format (format "%%s %%%ds" available-width) left right)))
-
-     ;; (defun octicon (symbol &optional color)
-     ;;   (let ((color (or color 'white)))
-     ;;     (propertize (all-the-icons-octicon symbol)
-     ;;                 'display `((raise 0))
-     ;;                 'face `(:family ,(all-the-icons-octicon-family)
-     ;;                         :foreground ,(doom-color color)
-     ;;                         :height 1.0))))
-
-     ;; (setq-default
-     ;;  mode-line-format
-     ;;  '((:eval
-     ;;     (render-mode-line
-     ;;      ;; left
-     ;;      (format-mode-line
-     ;;       (concat
-     ;;        " "
-     ;;        (cond
-     ;;         ((not (buffer-file-name)) (octicon "star"))
-     ;;         (buffer-read-only (octicon "lock"))
-     ;;         ((buffer-modified-p) (octicon "diff"))
-     ;;         (t (octicon "checklist")))
-     ;;        (propertize " %m "
-     ;;                    'face `(:weight bold))
-     ;;        (octicon "dash" 'grey)
-     ;;        (propertize " %b "
-     ;;                    'face `(:weight bold))))
-     ;;      ;; right
-     ;;      (format-mode-line
-     ;;       (string-join
-     ;;        `(,(let ((branch (car (vc-git-branches))))
-     ;;             (when branch
-     ;;               (string-join
-     ;;                `(,(octicon "git-branch")
-     ;;                  ,branch
-     ;;                  ,(octicon "dash" 'grey))
-     ;;                " ")))
-     ;;          ,(propertize "%l : %c "
-     ;;                       'face `(:weight bold)))
-     ;;        " "))
-     ;;      ))))
    #+END_SRC
