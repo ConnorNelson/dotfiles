@@ -94,29 +94,37 @@
         ("C-c p" . projectile-command-map))
     #+END_SRC
 
-*** Helm
+*** Ivy
 
     #+BEGIN_SRC emacs-lisp
-      (use-package helm
-        :bind (("M-x" . helm-M-x)
-               ("C-x C-f" . helm-find-files)
-               ("C-x b" . helm-mini)
-               ("C-x C-b" . helm-filtered-bookmarks)))
-    #+END_SRC
-
-*** Helm Projectile
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-projectile
+      (use-package ivy
         :config
-        (helm-projectile-on))
+        (ivy-mode 1)
+        (setq enable-recursive-minibuffers t)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-height 10)
+        (setq ivy-initial-inputs-alist nil)
+        (setq ivy-re-builders-alist
+              '((t   . ivy--regex-ignore-order)))
+        :bind ("C-x ." . ivy-resume))
     #+END_SRC
 
-*** Helm Swoop
+*** Counsel
 
     #+BEGIN_SRC emacs-lisp
-      (use-package helm-swoop
-        :bind ("M-i" . helm-swoop))
+      (use-package counsel
+        :bind (("M-x" . counsel-M-x)
+               ("C-s" . swiper-isearch)
+               ("C-r" . swiper-isearch-backward)
+               ("M-y" . counsel-yank-pop)))
+    #+END_SRC
+
+*** Counsel Projectile
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package counsel-projectile
+        :config
+        (counsel-projectile-mode))
     #+END_SRC
 
 *** Hydra
@@ -188,18 +196,6 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ace-window
         :bind ("M-o" . ace-window))
-    #+END_SRC
-
-*** Visual Regexp Steroids
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package visual-regexp-steroids
-        :bind (("C-c r" . vr/replace)
-               ("C-c q" . vr/query-replace)
-               ("M-%"   . vr/query-replace)
-               ("C-c m" . vr/mc-mark)
-               ("C-r"   . vr/isearch-backward) ;; C-M-r
-               ("C-s"   . vr/isearch-forward)))
     #+END_SRC
 
 *** Exec Path From Shell
