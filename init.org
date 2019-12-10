@@ -85,11 +85,7 @@
       (use-package projectile
         :config
         (projectile-mode)
-        (setq projectile-enable-caching t
-              projectile-switch-project-action
-              (lambda ()
-                (let ((magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
-                  (magit-status-setup-buffer))))
+        (setq projectile-enable-caching t)
         :bind-keymap
         ("C-c p" . projectile-command-map))
     #+END_SRC
@@ -239,7 +235,8 @@
                     ("S-TAB" . company-select-previous)
                     ("<backtab>" . company-select-previous)
                     ("C-<tab>" . company-complete-selection)
-                    ("<right>" . company-complete-selection)))
+                    ("<right>" . company-complete-selection))
+        :demand t)
     #+END_SRC
 
 *** Docker
