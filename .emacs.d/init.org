@@ -102,6 +102,7 @@
         (setq ivy-initial-inputs-alist nil)
         (setq ivy-re-builders-alist
               '((t   . ivy--regex-ignore-order)))
+        (setq ivy-initial-inputs-alist nil)
         :bind ("C-x ." . ivy-resume))
     #+END_SRC
 
