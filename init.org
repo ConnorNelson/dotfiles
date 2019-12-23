@@ -246,15 +246,6 @@
         :bind ("C-c d" . docker))
     #+END_SRC
 
-*** PDF Tools
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package pdf-tools
-          :config
-          (pdf-tools-install)
-          (setq-default pdf-view-display-size 'fit-page))
-    #+END_SRC
-
 ** Sane Defaults
 
    Use default customization values that are more sane.
