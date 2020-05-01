@@ -214,6 +214,7 @@
         (elpy-enable)
         (setq python-shell-interpreter "ipython"
               python-shell-interpreter-args "--simple -c exec('__import__(\\'gnureadline\\')') -i"
+              elpy-rpc-virtualenv-path 'current
               elpy-rpc-backend "jedi")
         (pyvenv-workon "+")
         (setq company-dabbrev-downcase 0
@@ -228,6 +229,10 @@
                 elpy-module-pyvenv
                 elpy-module-yasnippet
                 elpy-module-django))
+        (add-hook 'elpy-mode-hook
+                  '(lambda ()
+                     (when (eq major-mode 'python-mode)
+                       (add-hook 'before-save-hook 'elpy-black-fix-code))))
         (unbind-key "RET" company-active-map)
         (unbind-key "<return>" company-active-map)
         :bind (:map company-active-map
