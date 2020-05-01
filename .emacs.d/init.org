@@ -361,6 +361,16 @@
      (add-hook 'doc-view-mode-hook 'auto-revert-mode)
    #+END_SRC
 
+   Make tramp run fast.
+   #+BEGIN_SRC emacs-lisp
+     (setq remote-file-name-inhibit-cache nil)
+     (setq vc-ignore-dir-regexp
+           (format "%s\\|%s"
+                         vc-ignore-dir-regexp
+                         tramp-file-name-regexp))
+     (setq tramp-verbose 1)
+   #+END_SRC
+
 ** Misc Customizations
 
    Customize eshell to augment it with extra functionality
