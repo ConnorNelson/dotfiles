@@ -1,0 +1,15 @@
+* Oh My Zsh
+  #+BEGIN_SRC sh
+  sudo apt install zsh
+  chsh -s $(which zsh)
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+  #+END_SRC
+
+* Python
+** virtualenvwrapper
+   If virtualenvwrapper isn't installed correctly, it's init file will end up in the wrong location.
+   #+BEGIN_SRC sh
+   sudo pip3 install virtualenvwrapper
+   #+END_SRC
