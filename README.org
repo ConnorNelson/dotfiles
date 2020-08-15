@@ -19,3 +19,8 @@
    #+BEGIN_SRC sh
    wslusc --gui --env LIBGL_ALWAYS_INDRECT=1 --env DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0 emacs
    #+END_SRC
+
+* Emacs
+  #+BEGIN_SRC
+  M-x all-the-icons-install-fonts
+  #+END_SRC
