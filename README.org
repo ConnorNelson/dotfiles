@@ -17,7 +17,13 @@
 * WSL
 ** emacs
    #+BEGIN_SRC sh
-   wslusc --gui --env LIBGL_ALWAYS_INDRECT=1 --env DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0 emacs
+   touch ~/.previous_display
+   PREV_DISPLAY=$(cat ~/.previous_display)
+   DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+   [ "$PREV_DISPLAY" = "$DISPLAY" ] || wslusc --gui --env LIBGL_ALWAYS_INDRECT=1 --env DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0 emacs
+   echo -n "$DISPLAY" > ~/.previous_display
+   unset PREV_DISPLAY
+   unset DISPLAY
    #+END_SRC
 
 * Emacs
