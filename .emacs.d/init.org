@@ -285,6 +285,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil         ; Use spaces instead of tabs
+                   c-basic-offset 4             ; C indents should use 4 spaces
                    split-width-threshold 160    ; Split vertically by default
                    split-height-threshold nil)  ; Split vertically by default
 
