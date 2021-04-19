@@ -1,0 +1,2 @@
+import IPython
+alias interacti IPython.embed()
