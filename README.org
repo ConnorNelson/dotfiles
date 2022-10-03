@@ -1,32 +1,23 @@
-* Oh My Zsh
-  #+BEGIN_SRC sh
+* dotfiles
+
+** Setup
+
+#+BEGIN_SRC sh
+  cd ~
+  git init
+  git remote add origin https://github.com/ConnorNelson/dotfiles
+  git fetch
+  git checkout master
+
+  git update-index --assume-unchanged .emacs.d/init.el
+#+END_SRC
+
+** Oh My Zsh
+
+#+BEGIN_SRC sh
   sudo apt install zsh
   chsh -s $(which zsh)
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-  #+END_SRC
-
-* Python
-** virtualenvwrapper
-   If virtualenvwrapper isn't installed correctly, it's init file will end up in the wrong location.
-   #+BEGIN_SRC sh
-   sudo pip3 install virtualenvwrapper
-   #+END_SRC
-
-* WSL
-** emacs
-   #+BEGIN_SRC sh
-   touch ~/.previous_display
-   PREV_DISPLAY=$(cat ~/.previous_display)
-   DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
-   [ "$PREV_DISPLAY" = "$DISPLAY" ] || wslusc --gui --env LIBGL_ALWAYS_INDRECT=1 --env DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0 emacs
-   echo -n "$DISPLAY" > ~/.previous_display
-   unset PREV_DISPLAY
-   unset DISPLAY
-   #+END_SRC
-
-* Emacs
-  #+BEGIN_SRC
-  M-x all-the-icons-install-fonts
-  #+END_SRC
+#+END_SRC
