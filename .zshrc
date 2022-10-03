@@ -6,6 +6,7 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 export EDITOR=emacs
+export COLORTERM=truecolor
 
 export VIRTUALENVWRAPPER_PYTHON=$(which python3)
 export VIRTUAL_ENV_DISABLE_PROMPT=true
