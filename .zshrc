@@ -8,12 +8,10 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR=emacs
 export COLORTERM=truecolor
 
-export VIRTUALENVWRAPPER_PYTHON=$(which python3)
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 export PIP_REQUIRE_VIRTUALENV=true
-source /usr/local/bin/virtualenvwrapper.sh
 if (tty -s); then
-    workon +
+    test -e "~/.virtualenvs/+/bin/activate" && source "~/.virtualenvs/+/bin/activate"
 fi
 
 export MPLBACKEND="module://itermplot"
