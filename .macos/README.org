@@ -19,6 +19,8 @@
        iterm2 \
        emacs \
        rectangle \
+       discord \
+       slack \
        obs \
        font-source-code-pro
 
