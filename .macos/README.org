@@ -1,0 +1,25 @@
+* MacOS
+
+#+BEGIN_SRC sh
+  cd ~
+
+  # Install Homebrew
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  brew install \
+       zsh \
+       wget \
+       pure \
+       subversion
+
+  brew tap \
+       homebrew/cask-fonts
+
+  brew install --cask \
+       iterm2 \
+       emacs \
+       rectangle \
+       font-source-code-pro
+
+  open .macos/DoomOne.itermcolors
+#+END_SRC

@@ -1,9 +1,20 @@
 *
 
-!.emacs.d/README.org
+!.macos/
+!.macos/*
+
+!.emacs.d/
 !.emacs.d/init.el
 !.emacs.d/init.org
+!.emacs.d/README.org
+
+!.ssh/
+!.ssh/config
+!.ssh/kanak.pub
+
 !.zshrc
 !.pdbrc
-!.gitignore
+
 !README.org
+
+!.gitignore
