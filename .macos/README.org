@@ -21,6 +21,7 @@
        rectangle \
        discord \
        slack \
+       messenger \
        obs \
        font-source-code-pro
 
