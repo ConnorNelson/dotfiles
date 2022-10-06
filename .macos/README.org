@@ -19,6 +19,7 @@
        iterm2 \
        emacs \
        rectangle \
+       obs \
        font-source-code-pro
 
   open .macos/DoomOne.itermcolors
