@@ -10,8 +10,16 @@ if (tty -s); then
     test -e "~/.virtualenvs/+/bin/activate" && source "~/.virtualenvs/+/bin/activate"
 fi
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+case "$OSTYPE" in
+    linux*)
+        fpath+=($HOME/.zsh/pure)
+        ;;
 
-fpath+=("$(brew --prefix)/share/zsh/site-functions")
+    darwin*)
+        test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+        fpath+=("$(brew --prefix)/share/zsh/site-functions")
+        ;;
+esac
+
 autoload -U promptinit; promptinit
 prompt pure

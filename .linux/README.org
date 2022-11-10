@@ -1,0 +1,8 @@
+* Linux
+
+#+BEGIN_SRC sh
+  cd ~
+
+  mkdir -p "$HOME/.zsh"
+  git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+#+END_SRC
