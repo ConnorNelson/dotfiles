@@ -1,6 +1,11 @@
 export EDITOR=emacs
 export COLORTERM=truecolor
 
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=1000
+setopt SHARE_HISTORY
+
 export MPLBACKEND="module://itermplot"
 export ITERMPLOT=rv
 
