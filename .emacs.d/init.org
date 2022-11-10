@@ -147,10 +147,9 @@
           ("r" (lambda ()
                  (interactive)
                  (if (projectile-project-p)
-                     (async-shell-command (format "docker build -t %s %s && docker run -i --rm %s"
-                                            (projectile-project-name)
-                                            (projectile-project-root)
-                                            (projectile-project-name)))))
+                     (async-shell-command (format "~/.run/%s '%s'"
+                                                  (projectile-project-name)
+                                                  (projectile-project-root)))))
            "run" :color blue)
           ("a" org-agenda "agenda" :color blue))
         :bind ("C-c c" . hydra-misc/body))
