@@ -121,7 +121,10 @@
     #+BEGIN_SRC emacs-lisp
       (use-package counsel-projectile
         :config
-        (counsel-projectile-mode))
+        (counsel-projectile-mode)
+        (counsel-projectile-modify-action
+         'counsel-projectile-switch-project-action
+         '((default counsel-projectile-switch-project-action-vc))))
     #+END_SRC
 
 *** Hydra
@@ -165,6 +168,8 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package magit
+        :config
+        (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
         :bind ("C-x g" . magit-status))
     #+END_SRC
 
@@ -238,10 +243,10 @@
                 elpy-module-pyvenv
                 elpy-module-yasnippet
                 elpy-module-django))
-        (add-hook 'elpy-mode-hook
-                  '(lambda ()
-                     (when (eq major-mode 'python-mode)
-                       (add-hook 'before-save-hook 'elpy-black-fix-code nil t))))
+        ;; (add-hook 'elpy-mode-hook
+        ;;           '(lambda ()
+        ;;              (when (eq major-mode 'python-mode)
+        ;;                (add-hook 'before-save-hook 'elpy-black-fix-code nil t))))
         (unbind-key "RET" company-active-map)
         (unbind-key "<return>" company-active-map)
         :bind (:map company-active-map
@@ -396,7 +401,7 @@
    Setup org agenda files directory
 
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-files '("~/Projects/org/agenda"))
+     (setq org-agenda-files '("~/Projects/org/agenda.org"))
    #+END_SRC
 
 ** Visual
@@ -409,13 +414,6 @@
                          :height 140
                          :weight 'normal
                          :width 'normal)
-   #+END_SRC
-
-   Make frames slightly transparent.
-
-   #+BEGIN_SRC emacs-lisp
-     (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-     (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
    #+END_SRC
 
    Use a doom theme.
