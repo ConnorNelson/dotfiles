@@ -26,5 +26,7 @@ case "$OSTYPE" in
         ;;
 esac
 
+alias tcc="tmux -CC new -As0" 
+
 autoload -U promptinit; promptinit
 prompt pure
