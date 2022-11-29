@@ -17,6 +17,7 @@
 
 !.zshrc
 !.gitconfig
+!.tmux.conf
 !.pdbrc
 
 !README.org
