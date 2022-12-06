@@ -26,7 +26,10 @@ case "$OSTYPE" in
         ;;
 esac
 
-alias tcc="tmux -CC new -As0" 
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+alias tcc="tmux -CC new -As0"
 
 autoload -U promptinit; promptinit
 prompt pure
