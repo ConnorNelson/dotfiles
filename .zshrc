@@ -9,6 +9,7 @@ setopt SHARE_HISTORY
 export MPLBACKEND="module://itermplot"
 export ITERMPLOT=rv
 
+export PYTHONBREAKPOINT=ipdb.set_trace
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 export PIP_REQUIRE_VIRTUALENV=true
 if (tty -s); then
