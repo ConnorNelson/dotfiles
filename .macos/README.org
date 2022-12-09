@@ -23,8 +23,11 @@
        discord \
        slack \
        messenger \
+       spotify \
        obs \
        font-source-code-pro
 
   open .macos/DoomOne.itermcolors
 #+END_SRC
+
+- `System Preferences` > `Mission Control` > `Automatically rearrange Spaces based on most recent use`: uncheck
