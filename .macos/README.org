@@ -11,21 +11,31 @@
        wget \
        gh \
        pure \
-       subversion
+       subversion \
+       mactex \
+       act
 
   brew tap \
+       microsoft/git \
        homebrew/cask-fonts
 
   brew install --cask \
        iterm2 \
        emacs \
+       visual-studio-code \
        rectangle \
        discord \
        slack \
        messenger \
        spotify \
        obs \
+       docker \
+       zerotier-one \
+       git-credential-manager-core \
+       inkscape \
        font-source-code-pro
+
+  softwareupdate --install-rosetta
 
   open .macos/DoomOne.itermcolors
 #+END_SRC

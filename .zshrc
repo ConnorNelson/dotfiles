@@ -8,15 +8,15 @@ HISTSIZE=10000
 SAVEHIST=1000
 setopt SHARE_HISTORY
 
-export MPLBACKEND="module://itermplot"
-export ITERMPLOT=rv
+# export MPLBACKEND="module://itermplot"
+# export ITERMPLOT=rv
 
 export PYTHONBREAKPOINT=ipdb.set_trace
 export VIRTUAL_ENV_DISABLE_PROMPT=true
-export PIP_REQUIRE_VIRTUALENV=true
-if (tty -s); then
-    test -e "~/.virtualenvs/+/bin/activate" && source "~/.virtualenvs/+/bin/activate"
-fi
+# export PIP_REQUIRE_VIRTUALENV=true
+# if (tty -s); then
+#     test -e "~/.virtualenvs/+/bin/activate" && source "~/.virtualenvs/+/bin/activate"
+# fi
 
 case "$OSTYPE" in
     linux*)
@@ -36,3 +36,6 @@ alias tcc="tmux -CC new -As0"
 
 autoload -U promptinit; promptinit
 prompt pure
+
+source /Users/connor/.docker/init-zsh.sh || true # Added by Docker Desktop
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
